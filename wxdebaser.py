@@ -18,10 +18,12 @@ class Wxdebaser(wx.Frame):
         
         self.debaser_dir = '/opt/debaser' # default path of debaser is /opt/debaser, add support for configs eventually
         self.current_dir = os.getcwd() # add an option to select directory instead of this
+        self.default_dir = os.path.join("~","Downloads")
 
-        super(Wxdebaser, self).__init__(parent, title=title, size=(350, 250))
+        super(Wxdebaser, self).__init__(parent, title=title, size=(350, 300))
 
-        self.Bind(wx.EVT_BUTTON, self.run_app)
+        self.Bind(wx.EVT_BUTTON, self.run_app, id=1)
+        self.Bind(wx.EVT_BUTTON, self.file_select, id=2)
         self.InitUI()
         self.Centre()
         self.Show()
@@ -38,22 +40,31 @@ class Wxdebaser(wx.Frame):
 
         # set up main vertical box sizer
         vbox = wx.BoxSizer(wx.VERTICAL)
-    
+        
+        # create file destination box
+        hbox0 = wx.BoxSizer(wx.HORIZONTAL)
+        file_label = wx.StaticText(panel, label='Destination:')
+        hbox0.Add(file_label, flag=wx.RIGHT|wx.CENTRE, border=8)
+        self.file_text = wx.TextCtrl(panel)
+        self.file_text.SetValue(self.default_dir)
+        hbox0.Add(self.file_text, proportion=4)
+        self.file_button = wx.Button(panel, 2, '...')
+        hbox0.Add(self.file_button, proportion=1)
+        vbox.Add(hbox0, flag=wx.EXPAND|wx.LEFT|wx.RIGHT|wx.TOP, border=10)
+
         # create subreddit box
         hbox1 = wx.BoxSizer(wx.HORIZONTAL)
         subr_label = wx.StaticText(panel, label='Subreddit:')
-        #subr_label.SetFont(font)
         hbox1.Add(subr_label, flag=wx.RIGHT|wx.CENTRE, border=8)
         self.subr_text = wx.TextCtrl(panel)
         self.subr_text.SetValue('pics')
         hbox1.Add(self.subr_text, proportion=1)
-        vbox.Add(hbox1, flag=wx.EXPAND|wx.LEFT|wx.RIGHT|wx.TOP, border=10)
+        vbox.Add(hbox1, flag=wx.EXPAND|wx.LEFT|wx.RIGHT, border=10)
         
         # create filter box
         filters = ['hot', 'new', 'controversial', 'top']
         hbox2 = wx.BoxSizer(wx.HORIZONTAL)
         filt_label = wx.StaticText(panel, label='Filter:')
-        #filt_label.SetFont(font)
         hbox2.Add(filt_label, flag=wx.RIGHT|wx.CENTRE, border=8)
         self.filt_option = wx.ComboBox(panel, -1, value=filters[0], choices=filters, style=wx.CB_READONLY)
         hbox2.Add(self.filt_option, proportion=1)
@@ -63,7 +74,6 @@ class Wxdebaser(wx.Frame):
         limit = 5
         hbox3 = wx.BoxSizer(wx.HORIZONTAL)
         limit_label = wx.StaticText(panel, label='Limit:')
-        #limit_label.SetFont(font)
         hbox3.Add(limit_label, flag=wx.RIGHT|wx.CENTRE, border=8)
         self.limit_sc = wx.SpinCtrl(panel, -1, '')
         self.limit_sc.SetRange(1,255)
@@ -139,6 +149,11 @@ class Wxdebaser(wx.Frame):
         else:
             print "Large limit not detected."
             return True
+
+    def file_select(self, event):
+        # file selection dialog
+        print "File selection dialog..."
+        pass
 
 if __name__ == '__main__':
 
