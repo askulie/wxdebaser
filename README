@@ -1,0 +1,135 @@
+                   W X  d  eee  b    aaa   sss   eee   rrr
+                        d e   e b       a s     e   e r
+                      ddd eeeee bbb   aaa  sss  eeeee r
+                     d  d e     b  b a  a     s e     r
+                     d  d  eee  bbb   aaa  sss   eee  r
+                      dd  DEBASER IMAGE SCOURING FOR REDDIT
+===============================================================================
+Wxdebaser is a simple GUI interface for Debaser that uses wxPython.
+Debaser is a simple image scouring utility for Reddit.  It is free and open
+source, and written in Python using the reddit_api bindings.
+===============================================================================
+>> VERSION INFORMATION
+
+v0.51 - 12132011
+  * Added most of the working features
+  * Can select directories and such
+  * Log file is working
+  * Added command line options using optparse (just for version information)
+
+v0.50 - 12132011
+===============================================================================
+>> INSTALLATION
+
+Before installing wxdebaser, you'll need the debaser.py program and all of
+its dependencies.  You'll find debaser.py and it's install information here:
+https://github.com/askulie/debaser
+
+This particular version of Wxdebaser was built against debaser v0.52.
+
+You'll also need wxPython, which provides all the wonderful GUI fun.  You
+may already have it installed depending on your distribution.  In any case,
+check it out here:
+http://www.wxpython.org/
+
+Installing wxdebaser is simple...just place wxdebaser.py and d_icon.ico
+in the same directory as debaser.py.
+===============================================================================
+>> WHAT IT DOES AND HOW TO DO IT
+
+Debaser can scour a given subreddit for picture entries, then attempts to
+download them based on various criteria.  It cannot scour images from linked
+pages unless they are at imgur.com (and it also doesn't support imgur albums...
+yet).
+
+PLEASE NOTE!  Debaser will automatically overwrite duplicate files, so be
+aware of that when using it!
+
+Wxdebaser allows you to pass all of the parameters you would normally pass
+on the command line to debaser.py but in a fancy GUI package.  It also
+lets you select the directory to download to interactively.
+
+To start Wxdebaser, type the following in your command line (or you
+can create a launcher or shortcut to do the same):
+
+python wxpython.py
+
+You'll see a window with several fields for you to fill out.
+
+* Destination *
+This is the location where you want the image files to be downloaded to.
+It can be any path you have write access to.  If you don't have write access,
+you will get an exception thrown out (which you may not see if you don't run
+the program from the command line).  If you click the "..." button, you
+can choose the directory you want interactively through your desktop
+environment's directory chooser.
+
+Once again, please note that any files that debaser.py finds with the same
+names as those in your chosen directory will be OVERWRITTEN, so be cautious.
+
+* Subreddit *
+The subreddit can be basically any subreddit that exists.  For example:  pics,
+gaming, battlestations
+
+* Filter *
+The filter must be one of the following:  hot, top, controversial, or new.
+
+* Limit *
+The limit is the limit of submissions to gather from your subreddit.  Keep in
+mind that the more submissions you attempt to harvest, the longer it will take
+for debaser to process it, which can be a very long time at higher ranges
+depending on traffic at Reddit.
+
+Note that the widget used for the Limit field will max out at 255.  If you
+need more than this, well...you'll have to use debaser.py instead.
+Additionally, Wxdebaser will warn you if you have selected an absurdly high
+number of submissions to download and allow you to cancel if you'd like.
+
+* Console Window *
+The large text area below these fields will show the output of debaser.py
+much like invoking it from a command line would do using the --verbose flag.
+This can help you quickly view all the information that's being spit out
+by debaser.py.
+
+* Log Output *
+If you select this option, a file called ".debaser-log" will be placed
+in your destination directory.  This file will include a timestamp and
+all of the output shown in the console window.  If you're using the same
+directory repeatedly and select the Log Output option, the file ".debaser-log"
+file will be appended with a new timestamp and additional console info.
+
+Logging output is good because (currently) it gives you a permalink to the
+original Reddit submission, so you can go and read the comments (my
+personal favorite part) at your liesure.
+
+* Go! Button *
+Once you've got everything set, click the Go! button to begin the process.
+The GUI will hang while the downloads are happening, so wait for it to be
+done before trying to do anything else.  Once debaser.py has completed its
+magic, you can insert new information and start another download.
+
+Hopefully that gets you started using Wxdebaser.  Please read the README
+documentation for debaser.py as well, since that will give you additional
+information on what exactly Wxdebaser is doing.
+
+Keep in mind there may be issues downloading some images.  For example,
+.gifs and .pngs from imgur.com that don't use a direct "i.imgur.com" link
+will probably not download properly in the current version.  Additionally,
+there is a bug that seems to corrupt the download of images from wikipedia
+links...they download but the file may not open (at least in gThumb and GIMP).
+
+The current version of Wxdebaser is extremely chatty when run from the
+command line.  My plan for the next update is to eliminate this chattiness (as
+it was mainly included for debugging purposes), if I get around to it.
+
+My hope is that this program can be used to enjoy Reddit even more!
+===============================================================================
+>> LICENSE
+
+Copyright (c) 2011 Andy Kulie.
+
+Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
