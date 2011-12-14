@@ -10,6 +10,7 @@ A wxWidgets-based graphical front-end for debaser
 import wx
 import subprocess
 import os
+import datetime # for timestamping logfiles
 #import threading
 
 class Wxdebaser(wx.Frame):
@@ -21,9 +22,11 @@ class Wxdebaser(wx.Frame):
         self.default_dir = os.path.join("~","Downloads")
 
         super(Wxdebaser, self).__init__(parent, title=title, size=(350, 300))
-
+        
+        # bind events
         self.Bind(wx.EVT_BUTTON, self.run_app, id=1)
         self.Bind(wx.EVT_BUTTON, self.file_select, id=2)
+        
         self.InitUI()
         self.Centre()
         self.Show()
@@ -125,14 +128,21 @@ class Wxdebaser(wx.Frame):
 
     def run_subprocess(self, cmd):
         print "Initiating subprocess..."
+        self.console_log = ''
         proc = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
         for line in proc.stdout:
             wx.CallAfter(self.console_output.AppendText, line)
+            self.console_log = self.console_log + line
         print "Subprocess complete!"
 
     def write_to_log(self):
         print "Writing to log file..."
-        # insert logfile writing code here
+        print self.console_log
+        now = datetime.datetime.now()
+        f = open(os.path.join(self.file_text.GetValue(), '.debaser-log'), 'a')
+        f.write(str(now) + '\n')
+        f.write(self.console_log)
+        f.close()
         pass
 
     def check_limit(self, limit):
