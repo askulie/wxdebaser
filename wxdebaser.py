@@ -44,6 +44,7 @@ class Wxdebaser(wx.Frame):
         self.Bind(wx.EVT_BUTTON, self.run_app, id=1)
         self.Bind(wx.EVT_BUTTON, self.file_select, id=2)
         
+        self.SetIcon(wx.Icon(os.path.join(self.debaser_dir, 'd_icon.ico'), wx.BITMAP_TYPE_ICO))
         self.InitUI()
         self.Centre()
         self.Show()
