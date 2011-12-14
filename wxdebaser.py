@@ -2,22 +2,39 @@
 
 """
 wxdebaser
+v0.51 - 12132011
+  * Added most of the working features
+  * Can select directories and such
+  * Log file is working
+  * Added command line options using optparse (just for version information)
+
 v0.50 - 12132011
 
 A wxWidgets-based graphical front-end for debaser
+
+Copyright (c) 2011 Andy Kulie.
+
+Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 """
 
 import wx
 import subprocess
 import os
 import datetime # for timestamping logfiles
+from optparse import OptionParser
 #import threading
+
+current_version = 'v0.51 - 12132011'
 
 class Wxdebaser(wx.Frame):
     
     def __init__(self, parent, title):
         
-        self.debaser_dir = '/opt/debaser' # default path of debaser is /opt/debaser, add support for configs eventually
+        self.debaser_dir = os.path.split(os.path.abspath(__file__))[0] # changed to locate debaser.py in same directory as wxdebaser.py (so you can put it anywhere!)
         self.current_dir = os.getcwd() # add an option to select directory instead of this
         self.default_dir = os.path.join("~","Downloads")
 
@@ -172,6 +189,11 @@ class Wxdebaser(wx.Frame):
             return
 
 if __name__ == '__main__':
+    
+    # add options for parser
+    usage = "usage: %prog [options] arg"
+    parser = OptionParser(usage, version=current_version)
+    (options, args) = parser.parse_args()
 
     app = wx.App()
     Wxdebaser(None, title='Wxdebaser')
