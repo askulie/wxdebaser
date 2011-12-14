@@ -111,6 +111,7 @@ class Wxdebaser(wx.Frame):
             return
         if not(self.check_limit(limit)):
             return
+        os.chdir(os.path.expanduser(self.file_text.GetValue())) # change to selected directory
         cmd = ["python", os.path.join(self.debaser_dir, "debaser.py"), "--subreddit", self.subr_text.GetValue(), "--filter", filter_name, " --limit ", str(limit), "-v"]
         print "Command generated:"
         print cmd
@@ -151,9 +152,14 @@ class Wxdebaser(wx.Frame):
             return True
 
     def file_select(self, event):
-        # file selection dialog
-        print "File selection dialog..."
-        pass
+        print "Directory select dialog..."
+        dlg = wx.DirDialog(self, "Choose a destination directory:", style=wx.DD_DEFAULT_STYLE|wx.DD_NEW_DIR_BUTTON, defaultPath=os.path.expanduser(self.default_dir))
+        choice = dlg.ShowModal()
+        if (choice == wx.ID_OK):
+            print "Chose " + dlg.GetPath()
+            self.file_text.SetValue(dlg.GetPath())
+        else:
+            return
 
 if __name__ == '__main__':
 
