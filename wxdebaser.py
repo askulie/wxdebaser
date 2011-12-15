@@ -161,7 +161,6 @@ class Wxdebaser(wx.Frame):
             return
         os.chdir(os.path.expanduser(self.file_text.GetValue())) # change to selected directory
         cmd = ["python", os.path.join(self.debaser_dir, "debaser.py"), "--subreddit", self.subr_text.GetValue(), "--filter", filter_name, "--limit", str(limit), "-v"]
-        print cmd
         self.run_subprocess(cmd)
         if (self.log_checkbox.GetValue()):
             self.write_to_log()
