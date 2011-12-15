@@ -2,6 +2,13 @@
 
 """
 wxdebaser
+v0.511 - 12142011
+  * Made version output match debaser.py format
+  * Removed extraneous variables
+  * Added tons of comments
+  * Removed debug console output
+  * Fixed a bug where limit value wasn't getting passed to debaser.py (oops! D:)
+
 v0.51 - 12132011
   * Added most of the working features
   * Can select directories and such
@@ -26,16 +33,28 @@ import subprocess
 import os
 import datetime # for timestamping logfiles
 from optparse import OptionParser
-#import threading
 
-current_version = 'v0.51 - 12132011'
+current_version = '%prog 0.511-12142011'
 
+"""
+Wxdebaser(wx.Frame)
+  Class to construct the Wxdebaser window and
+  make everything work beautifully.
+"""
 class Wxdebaser(wx.Frame):
-    
+
+    """
+    __init__(parent, title)
+      Initializes the Wxdebaser object.
+      
+      parent - the parent object [Wxdebaser]
+      title - window title [STRING]
+      
+      returns nothing
+    """
     def __init__(self, parent, title):
         
         self.debaser_dir = os.path.split(os.path.abspath(__file__))[0] # changed to locate debaser.py in same directory as wxdebaser.py (so you can put it anywhere!)
-        self.current_dir = os.getcwd() # add an option to select directory instead of this
         self.default_dir = os.path.join("~","Downloads")
 
         super(Wxdebaser, self).__init__(parent, title=title, size=(350, 300))
@@ -49,15 +68,19 @@ class Wxdebaser(wx.Frame):
         self.Centre()
         self.Show()
     
+    """
+    InitUI()
+      Initializes the user interface.
+   
+      returns nothing
+    """
     def InitUI(self):
         # create the panel
         panel = wx.Panel(self)
 
         # get system font
         font = wx.SystemSettings_GetFont(wx.SYS_SYSTEM_FONT)
-        font2 = font
-        font.SetPointSize(9)
-        font2.SetPointSize(8)
+        font.SetPointSize(8)
 
         # set up main vertical box sizer
         vbox = wx.BoxSizer(wx.VERTICAL)
@@ -105,7 +128,7 @@ class Wxdebaser(wx.Frame):
         # create console box
         hbox4 = wx.BoxSizer(wx.HORIZONTAL)
         self.console_output = wx.TextCtrl(panel, -1, style=wx.TE_MULTILINE|wx.TE_READONLY)
-        self.console_output.SetFont(font2)
+        self.console_output.SetFont(font)
         hbox4.Add(self.console_output, proportion=1, border=10)
         vbox.Add(hbox4, flag=wx.EXPAND|wx.ALL, border=10)
 
@@ -119,72 +142,92 @@ class Wxdebaser(wx.Frame):
         
         panel.SetSizer(vbox)
 
-        
+    """
+    run_app(event)
+      Run the debaser.py application on an event.
+
+      event - event passed by wx button [wx.__core.PyEventBinder]
+   
+      returns nothing
+    """
     def run_app(self, event):
-        # run the actual app here
-        print "Values: subreddit " + self.subr_text.GetValue() + " using filter " +  self.filt_option.GetValue() + " with limit " + str(self.limit_sc.GetValue())
         subr_name = self.subr_text.GetValue()
         filter_name = self.filt_option.GetValue()
         limit = self.limit_sc.GetValue()
         if (subr_name == ''):
             wx.MessageBox('Subreddit field was left blank.\nPlease enter a subreddit!', 'ERROR', wx.OK | wx.ICON_ERROR)
-            print "Error encountered.  Subreddit field was left blank."
             return
         if not(self.check_limit(limit)):
             return
         os.chdir(os.path.expanduser(self.file_text.GetValue())) # change to selected directory
-        cmd = ["python", os.path.join(self.debaser_dir, "debaser.py"), "--subreddit", self.subr_text.GetValue(), "--filter", filter_name, " --limit ", str(limit), "-v"]
-        print "Command generated:"
+        cmd = ["python", os.path.join(self.debaser_dir, "debaser.py"), "--subreddit", self.subr_text.GetValue(), "--filter", filter_name, "--limit", str(limit), "-v"]
         print cmd
-        print "Starting thread..."
-        #thread = threading.Thread(target=self.run_subprocess, args=(cmd,))
-        #thread.setDaemon(True)
-        #thread.start()
         self.run_subprocess(cmd)
         if (self.log_checkbox.GetValue()):
             self.write_to_log()
 
+    """
+    run_subprocess(cmd)
+      Runs the debaser.py script as a subprocess and
+      captures stdout to return to console_output widget.
+   
+      cmd - command string [STRING]
+
+      returns nothing
+    """
     def run_subprocess(self, cmd):
-        print "Initiating subprocess..."
         self.console_log = ''
         proc = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
         for line in proc.stdout:
             wx.CallAfter(self.console_output.AppendText, line)
             self.console_log = self.console_log + line
-        print "Subprocess complete!"
 
+    """
+    write_to_log()
+      Write to a log file in the working directory.
+
+      returns nothing
+    """
     def write_to_log(self):
-        print "Writing to log file..."
-        print self.console_log
         now = datetime.datetime.now()
         f = open(os.path.join(self.file_text.GetValue(), '.debaser-log'), 'a')
         f.write(str(now) + '\n')
         f.write(self.console_log)
         f.close()
-        pass
 
+    """
+    check_limit(limit)
+      Check to see if the limit value is huge and ask for
+      permission to continue.
+
+      limit - limit value [INT]
+
+      returns boolean
+    """
     def check_limit(self, limit):
-        print "Checking limit..." + str(limit)
         if (limit > 20):
-            print "Large limit detected.  Asking for confirmation."
             choice = wx.MessageBox('You have selected a large limit.\nPlease note that downloading this will take a very long time\nand will most likely time out.\n\nAre you usure you want to continue?', 'Large Limit Detected', wx.YES_NO|wx.ICON_INFORMATION)
             if choice == wx.YES:
-                print "Going forward with large limit."
                 return True
             else:
-                print "Cancelled."
                 return False
         # check for an extremely large limit value
         else:
-            print "Large limit not detected."
             return True
 
+    """
+    file_select(event)
+      Open the directory selection dialog and set
+      the value of self.file_text with the results.
+
+      event - event passed by the wx button [wx.__core.PyEventBinder]
+
+      returns nothing
+    """
     def file_select(self, event):
-        print "Directory select dialog..."
         dlg = wx.DirDialog(self, "Choose a destination directory:", style=wx.DD_DEFAULT_STYLE|wx.DD_NEW_DIR_BUTTON, defaultPath=os.path.expanduser(self.default_dir))
         choice = dlg.ShowModal()
         if (choice == wx.ID_OK):
-            print "Chose " + dlg.GetPath()
             self.file_text.SetValue(dlg.GetPath())
         else:
             return
@@ -199,12 +242,3 @@ if __name__ == '__main__':
     app = wx.App()
     Wxdebaser(None, title='Wxdebaser')
     app.MainLoop()
-
-
-"""
-Still to be done:
-    - Implement log file
-    - Figure out a prettier way to access the debaser.py file without finding it in /opt/debaser
-    - Add a field to enter the desired path to download to
-    - Modify debaser.py to allow for file overwrite checking
-"""

@@ -11,6 +11,13 @@ source, and written in Python using the reddit_api bindings.
 ===============================================================================
 >> VERSION INFORMATION
 
+v0.511 - 12142011
+  * Made version output match debaser.py format
+  * Removed extraneous variables
+  * Added tons of comments
+  * Removed debug console output
+  * Fixed a bug where limit value wasn't getting passed to debaser.py (oops! D:)
+
 v0.51 - 12132011
   * Added most of the working features
   * Can select directories and such
@@ -25,7 +32,11 @@ Before installing wxdebaser, you'll need the debaser.py program and all of
 its dependencies.  You'll find debaser.py and it's install information here:
 https://github.com/askulie/debaser
 
-This particular version of Wxdebaser was built against debaser v0.52.
+This particular version of Wxdebaser was built against debaser v0.52.  It
+doesn't support the new overwrite flag very recently introduced in
+v0.53, but will still work with it - you just can't enable the --overwrite
+flag from within wxdebaser, so duplicate files will NOT be overwritten if
+you are running it with debaser.py v0.53.
 
 You'll also need wxPython, which provides all the wonderful GUI fun.  You
 may already have it installed depending on your distribution.  In any case,
@@ -42,8 +53,9 @@ download them based on various criteria.  It cannot scour images from linked
 pages unless they are at imgur.com (and it also doesn't support imgur albums...
 yet).
 
-PLEASE NOTE!  Debaser will automatically overwrite duplicate files, so be
-aware of that when using it!
+PLEASE NOTE!  Debaser v0.52 and under will automatically overwrite duplicate 
+files, so be aware of that when using it!  Debaser v0.53 will do the exact
+opposite (ie, skip duplicate files), so be aware of that, too!
 
 Wxdebaser allows you to pass all of the parameters you would normally pass
 on the command line to debaser.py but in a fancy GUI package.  It also
@@ -117,10 +129,6 @@ Keep in mind there may be issues downloading some images.  For example,
 will probably not download properly in the current version.  Additionally,
 there is a bug that seems to corrupt the download of images from wikipedia
 links...they download but the file may not open (at least in gThumb and GIMP).
-
-The current version of Wxdebaser is extremely chatty when run from the
-command line.  My plan for the next update is to eliminate this chattiness (as
-it was mainly included for debugging purposes), if I get around to it.
 
 My hope is that this program can be used to enjoy Reddit even more!
 ===============================================================================
