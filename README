@@ -10,6 +10,10 @@ Debaser is a simple image scouring utility for Reddit.  It is free and open
 source, and written in Python using the reddit_api bindings.
 ===============================================================================
 >> VERSION INFORMATION
+v0.52 - 12162011
+  * Added extended options (overwrite & nsfw)
+  * Added construct-command method to break out command construction
+  * Fixed typo in info dialog box
 
 v0.511 - 12142011
   * Made version output match debaser.py format
@@ -29,14 +33,27 @@ v0.50 - 12132011
 >> INSTALLATION
 
 Before installing wxdebaser, you'll need the debaser.py program and all of
-its dependencies.  You'll find debaser.py and it's install information here:
+its dependencies.  You'll find debaser.py and its install information here:
 https://github.com/askulie/debaser
 
-This particular version of Wxdebaser was built against debaser v0.52.  It
-doesn't support the new overwrite flag very recently introduced in
-v0.53, but will still work with it - you just can't enable the --overwrite
-flag from within wxdebaser, so duplicate files will NOT be overwritten if
-you are running it with debaser.py v0.53.
+This particular version of Wxdebaser was built against debaser v0.54, and
+thus supports all of the command line options introduced in v0.53-0.54.
+If you use an older version of debaser.py, here is what to expect:
+-----------------------
+v0.53 - does not support the --nsfw flag.  It will still work, but if you 
+check the "Allow nsfw" box, a usage error will appear in the console box.
+All nsfw-tagged submissions will be automatically downloaded.
+------------------------
+v0.52 - does not support the --overwrite or --nsfw flags.  It will still
+work, but if you check either "Overwrite" or "Allow NSFW," a usage error
+will appear in the console box.  All nsfw-tagged submissions will be
+downloaded, and files will be automatically overwritten.
+-------------------------
+Older - same behavior as v0.52, minus the usual bugfixing wizardry.
+
+It is HIGHLY RECOMMENDED to use at least debaser.py v0.54 with this
+version of wxdebaser.py.  This has just been documented here to show you
+where the incompatibilities and issues may lie.
 
 You'll also need wxPython, which provides all the wonderful GUI fun.  You
 may already have it installed depending on your distribution.  In any case,
@@ -53,9 +70,9 @@ download them based on various criteria.  It cannot scour images from linked
 pages unless they are at imgur.com (and it also doesn't support imgur albums...
 yet).
 
-PLEASE NOTE!  Debaser v0.52 and under will automatically overwrite duplicate 
-files, so be aware of that when using it!  Debaser v0.53 will do the exact
-opposite (ie, skip duplicate files), so be aware of that, too!
+Please read the notes above about the effects of different versions of
+debaser.py on the behavior of the GUI frontend.  For best, results, please
+use debaser.py v0.54 or later with this version of wxdebaser.py.
 
 Wxdebaser allows you to pass all of the parameters you would normally pass
 on the command line to debaser.py but in a fancy GUI package.  It also
@@ -102,6 +119,14 @@ The large text area below these fields will show the output of debaser.py
 much like invoking it from a command line would do using the --verbose flag.
 This can help you quickly view all the information that's being spit out
 by debaser.py.
+
+* Overwrite *
+Select this option to overwrite files in the given directory if matches
+are found.  Use with caution!
+
+* Allow nsfw*
+Select this option to allow submissions tagged as "not safe for work"
+to be downloaded.
 
 * Log Output *
 If you select this option, a file called ".debaser-log" will be placed

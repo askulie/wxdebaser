@@ -2,6 +2,11 @@
 
 """
 wxdebaser
+v0.52 - 12162011
+  * Added extended options (overwrite & nsfw)
+  * Added construct-command method to break out command construction
+  * Fixed typo in info dialog box
+
 v0.511 - 12142011
   * Made version output match debaser.py format
   * Removed extraneous variables
@@ -34,7 +39,7 @@ import os
 import datetime # for timestamping logfiles
 from optparse import OptionParser
 
-current_version = '%prog 0.511-12142011'
+current_version = '%prog 0.52-12162011'
 
 """
 Wxdebaser(wx.Frame)
@@ -132,6 +137,14 @@ class Wxdebaser(wx.Frame):
         hbox4.Add(self.console_output, proportion=1, border=10)
         vbox.Add(hbox4, flag=wx.EXPAND|wx.ALL, border=10)
 
+        # create extended options box
+        hbox4_5 = wx.BoxSizer(wx.HORIZONTAL)
+        self.over_checkbox = wx.CheckBox(panel, -1, 'Overwrite')
+        hbox4_5.Add(self.over_checkbox, flag=wx.RIGHT|wx.CENTRE, border=8)
+        self.nsfw_checkbox = wx.CheckBox(panel, -1, 'Allow nsfw')
+        hbox4_5.Add(self.nsfw_checkbox, proportion=1, border=8)
+        vbox.Add(hbox4_5, flag=wx.EXPAND|wx.LEFT|wx.RIGHT, border=10)
+
         # create buttons box
         hbox5 = wx.BoxSizer(wx.HORIZONTAL)
         self.log_checkbox = wx.CheckBox(panel, -1, 'Log Output')
@@ -154,13 +167,15 @@ class Wxdebaser(wx.Frame):
         subr_name = self.subr_text.GetValue()
         filter_name = self.filt_option.GetValue()
         limit = self.limit_sc.GetValue()
+        over_sel = self.over_checkbox.GetValue()
+        nsfw_sel = self.nsfw_checkbox.GetValue()
         if (subr_name == ''):
             wx.MessageBox('Subreddit field was left blank.\nPlease enter a subreddit!', 'ERROR', wx.OK | wx.ICON_ERROR)
             return
         if not(self.check_limit(limit)):
             return
         os.chdir(os.path.expanduser(self.file_text.GetValue())) # change to selected directory
-        cmd = ["python", os.path.join(self.debaser_dir, "debaser.py"), "--subreddit", self.subr_text.GetValue(), "--filter", filter_name, "--limit", str(limit), "-v"]
+        cmd = self.construct_command(subr=subr_name, filt=filter_name, limit=limit, over_flag=over_sel, nsfw_flag=nsfw_sel)
         self.run_subprocess(cmd)
         if (self.log_checkbox.GetValue()):
             self.write_to_log()
@@ -205,7 +220,7 @@ class Wxdebaser(wx.Frame):
     """
     def check_limit(self, limit):
         if (limit > 20):
-            choice = wx.MessageBox('You have selected a large limit.\nPlease note that downloading this will take a very long time\nand will most likely time out.\n\nAre you usure you want to continue?', 'Large Limit Detected', wx.YES_NO|wx.ICON_INFORMATION)
+            choice = wx.MessageBox('You have selected a large limit.\nPlease note that downloading this will take a very long time\nand will most likely time out.\n\nAre you sure you want to continue?', 'Large Limit Detected', wx.YES_NO|wx.ICON_INFORMATION)
             if choice == wx.YES:
                 return True
             else:
@@ -230,6 +245,24 @@ class Wxdebaser(wx.Frame):
             self.file_text.SetValue(dlg.GetPath())
         else:
             return
+
+    """
+    construct_command(subr, filt, limit, over_flag, nsfw_flag)
+      Construct a debaser.py command line.
+
+      subr - subreddit name [STRING]
+      filt - subreddit filter (hot, controversial, new, top) [STRING]
+      limit - limit of submissions [INT]
+      over_flag - overwrite flag [BOOLEAN]
+      nsfw_flag - nsfw flag [BOOLEAN]
+      
+      returns [LIST OF STRINGS]
+    """
+    def construct_command(self, subr='pics', filt='hot', limit=5, over_flag=False, nsfw_flag=False):
+        cmd = ["python", os.path.join(self.debaser_dir, "debaser.py"), "--subreddit", subr, "--filter", filt, "--limit", str(limit), "-v"]
+        if over_flag: cmd.append("-o")
+        if nsfw_flag: cmd.append("-n")
+        return cmd
 
 if __name__ == '__main__':
     
