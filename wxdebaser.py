@@ -2,6 +2,11 @@
 
 """
 wxdebaser
+experimental v0.53 - 12162011
+  * Added check for exist & correct version of debaser.py
+  * Created global variable for window title
+  * Modified console box behavior
+
 v0.52 - 12162011
   * Added extended options (overwrite & nsfw)
   * Added construct-command method to break out command construction
@@ -37,9 +42,11 @@ import wx
 import subprocess
 import os
 import datetime # for timestamping logfiles
+import sys # for early exit on failed debaser check
 from optparse import OptionParser
 
 current_version = '%prog 0.52-12162011'
+window_title = 'Wxdebaser - experimental'
 
 """
 Wxdebaser(wx.Frame)
@@ -61,13 +68,17 @@ class Wxdebaser(wx.Frame):
         
         self.debaser_dir = os.path.split(os.path.abspath(__file__))[0] # changed to locate debaser.py in same directory as wxdebaser.py (so you can put it anywhere!)
         self.default_dir = os.path.join("~","Downloads")
-
+        
         super(Wxdebaser, self).__init__(parent, title=title, size=(350, 300))
         
         # bind events
         self.Bind(wx.EVT_BUTTON, self.run_app, id=1)
         self.Bind(wx.EVT_BUTTON, self.file_select, id=2)
         
+        required_version = 0.54
+        if not(self.check_debaser(required_version)):
+            sys.exit(1)
+
         self.SetIcon(wx.Icon(os.path.join(self.debaser_dir, 'd_icon.ico'), wx.BITMAP_TYPE_ICO))
         self.InitUI()
         self.Centre()
@@ -264,6 +275,32 @@ class Wxdebaser(wx.Frame):
         if nsfw_flag: cmd.append("-n")
         return cmd
 
+    """
+    check_debaser(req_ver)
+      Check to see if debaser.py script exists & is correct version
+     
+      req_ver - required version of debaser.py [FLOAT]
+
+      returns [BOOLEAN]
+    """
+    def check_debaser(self, req_ver):
+        check_path = os.path.join(self.debaser_dir, "debaser.py")
+        check_version = ''
+        if os.path.exists(check_path):
+            cmd = ["python", check_path, "--version"]
+            proc = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+            for line in proc.stdout:            
+                check_version = check_version + line
+            print check_version[11:15]
+            if (float(check_version[11:15]) < req_ver):
+                wx.MessageBox('You are using an old version of debaser.py (v' + check_version[11:15] + ').\nThis version of wxdebaser is built for debaser.py v' + str(req_ver) + ' or later. \nSome features may not operate properly.\n\nThe latest version can be downloaded here:\nhttps://github.com/askulie/debaser','Wxdebaser: Old debaser.py detected',wx.OK|wx.ICON_WARNING)
+                return True
+            else:
+                return True
+        else:
+            wx.MessageBox('The debaser.py script was not found in the wxdebaser directory.\nPlease install debaser.py (v' + str(req_ver) + ' or later) into the same directory as wxdebaser.py.\n\nThe latest version can be downloaded here:\nhttps://github.com/askulie/debaser ', 'Wxdebaser: Critical Error', wx.OK|wx.ICON_ERROR)
+            return False
+            
 if __name__ == '__main__':
     
     # add options for parser
@@ -272,5 +309,5 @@ if __name__ == '__main__':
     (options, args) = parser.parse_args()
 
     app = wx.App()
-    Wxdebaser(None, title='Wxdebaser')
+    Wxdebaser(None, title=window_title) # changed to use global variable at top for title
     app.MainLoop()
