@@ -10,6 +10,15 @@ Debaser is a simple image scouring utility for Reddit.  It is free and open
 source, and written in Python using the reddit_api bindings.
 ===============================================================================
 >> VERSION INFORMATION
+v0.531 - 12162011
+  * Added Ctrl+Q keyboard shortcut
+  * Initial focus set to file_button
+
+v0.53 - 12162011
+  * Added check for exist & correct version of debaser.py
+  * Created global variable for window title
+  * Modified console box behavior
+
 v0.52 - 12162011
   * Added extended options (overwrite & nsfw)
   * Added construct-command method to break out command construction
@@ -53,7 +62,8 @@ Older - same behavior as v0.52, minus the usual bugfixing wizardry.
 
 It is HIGHLY RECOMMENDED to use at least debaser.py v0.54 with this
 version of wxdebaser.py.  This has just been documented here to show you
-where the incompatibilities and issues may lie.
+where the incompatibilities and issues may lie.  Wxdebaser will warn
+you if you are using an older version of debaser.py when you run it.
 
 You'll also need wxPython, which provides all the wonderful GUI fun.  You
 may already have it installed depending on your distribution.  In any case,
@@ -144,6 +154,10 @@ Once you've got everything set, click the Go! button to begin the process.
 The GUI will hang while the downloads are happening, so wait for it to be
 done before trying to do anything else.  Once debaser.py has completed its
 magic, you can insert new information and start another download.
+
+* Quitting Wxdebaser *
+You can quit Wxdebaser by pressing the close button presented by your
+window manager, or you can press Ctrl+Q.
 
 Hopefully that gets you started using Wxdebaser.  Please read the README
 documentation for debaser.py as well, since that will give you additional
