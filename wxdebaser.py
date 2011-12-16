@@ -2,11 +2,11 @@
 
 """
 wxdebaser
-experimental v0.531 - 12162011
+v0.531 - 12162011
   * Added Ctrl+Q keyboard shortcut
   * Initial focus set to file_button
 
-experimental v0.53 - 12162011
+v0.53 - 12162011
   * Added check for exist & correct version of debaser.py
   * Created global variable for window title
   * Modified console box behavior
@@ -49,8 +49,8 @@ import datetime # for timestamping logfiles
 import sys # for early exit on failed debaser check
 from optparse import OptionParser
 
-current_version = '%prog 0.52-12162011'
-window_title = 'Wxdebaser - experimental'
+current_version = '%prog 0.531-12162011'
+window_title = 'Wxdebaser'
 
 """
 Wxdebaser(wx.Frame)
