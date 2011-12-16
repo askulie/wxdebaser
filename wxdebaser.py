@@ -2,6 +2,10 @@
 
 """
 wxdebaser
+experimental v0.531 - 12162011
+  * Added Ctrl+Q keyboard shortcut
+  * Initial focus set to file_button
+
 experimental v0.53 - 12162011
   * Added check for exist & correct version of debaser.py
   * Created global variable for window title
@@ -74,13 +78,24 @@ class Wxdebaser(wx.Frame):
         # bind events
         self.Bind(wx.EVT_BUTTON, self.run_app, id=1)
         self.Bind(wx.EVT_BUTTON, self.file_select, id=2)
-        
+
+        # bind ctrl+q key combo
+        randomId = wx.NewId()
+        self.Bind(wx.EVT_MENU, self.quit_key, id=randomId)
+        accel_tbl = wx.AcceleratorTable([(wx.ACCEL_CTRL, ord('q'), randomId)])
+        self.SetAcceleratorTable(accel_tbl)
+
+        # check debaser version
         required_version = 0.54
         if not(self.check_debaser(required_version)):
             sys.exit(1)
 
         self.SetIcon(wx.Icon(os.path.join(self.debaser_dir, 'd_icon.ico'), wx.BITMAP_TYPE_ICO))
         self.InitUI()
+
+        # set first focus on file button, to allow for keyboard input
+        self.file_button.SetFocus()
+
         self.Centre()
         self.Show()
     
@@ -291,7 +306,6 @@ class Wxdebaser(wx.Frame):
             proc = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
             for line in proc.stdout:            
                 check_version = check_version + line
-            print check_version[11:15]
             if (float(check_version[11:15]) < req_ver):
                 wx.MessageBox('You are using an old version of debaser.py (v' + check_version[11:15] + ').\nThis version of wxdebaser is built for debaser.py v' + str(req_ver) + ' or later. \nSome features may not operate properly.\n\nThe latest version can be downloaded here:\nhttps://github.com/askulie/debaser','Wxdebaser: Old debaser.py detected',wx.OK|wx.ICON_WARNING)
                 return True
@@ -300,7 +314,18 @@ class Wxdebaser(wx.Frame):
         else:
             wx.MessageBox('The debaser.py script was not found in the wxdebaser directory.\nPlease install debaser.py (v' + str(req_ver) + ' or later) into the same directory as wxdebaser.py.\n\nThe latest version can be downloaded here:\nhttps://github.com/askulie/debaser ', 'Wxdebaser: Critical Error', wx.OK|wx.ICON_ERROR)
             return False
-            
+
+    """
+    quit_key (event)
+      Exit the program if key event is pressed
+
+      event - event passed by the wx key combo [wx.__core.PyEventBinder]
+
+      returns nothing
+    """
+    def quit_key(self, event):
+        sys.exit(0)
+        
 if __name__ == '__main__':
     
     # add options for parser
